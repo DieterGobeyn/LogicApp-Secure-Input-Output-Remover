@@ -1,0 +1,21 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  LogicAppName: '' # Replace this with the name of the Logic App Standard
+  Subscription: '' # Replace this with the name of your Azure Subscription
+  Environment: '' # Replace this with the name of your DevOps environment
+
+steps:
+- ${{ if ne(variables['Environment'], 'PRD') }}:
+  - task: AzurePowerShell@5
+    displayName: 'Remove Secure Input/Output in Logic App'
+    inputs:
+      azureSubscription: '$(Subscription)'
+      ScriptType: 'FilePath'
+      ScriptPath: 'RemoveSecureInputOutput.ps1'
+      ScriptArguments: '-LogicAppName $(LogicAppName)'
+      azurePowerShellVersion: 'LatestVersion'
